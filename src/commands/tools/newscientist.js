@@ -58,15 +58,15 @@ module.exports = {
         await interaction.reply({
             content: 'Choose a feed to see the latest articles:',
             components: [row],
-            ephemeral: true, // Visible only to the user
+            ephemeral: true, 
         });
     },
     
     async handleSelect(interaction) {
         const parser = new RSSParser();
-        const feedUrl = interaction.values[0]; // Selected feed URL
+        const feedUrl = interaction.values[0]; 
     
-        // Retry mechanism for fetching the feed
+        
         async function fetchFeedWithRetry(url, retries = 3) {
             try {
                 const feed = await parser.parseURL(url);
@@ -80,37 +80,37 @@ module.exports = {
             }
         }
     
-        // Cleanup XML if necessary (e.g., handling attributes without values)
+        
         const cleanXML = xml => {
-            return xml.replace(/<([a-zA-Z0-9\-]+)(?=\s)(?!.*?=[^>]+>)/g, '<$1 />'); // Replace empty attributes with self-closing
+            return xml.replace(/<([a-zA-Z0-9\-]+)(?=\s)(?!.*?=[^>]+>)/g, '<$1 />'); 
         };
     
         try {
             await interaction.deferUpdate();
     
-            // Log the feed URL to make sure it's being passed correctly
+           
             console.log('Selected feed URL:', feedUrl);
     
-            // Fetch the feed with retry logic
+            
             let feed = await fetchFeedWithRetry(feedUrl);
     
-            // Log the feed object for debugging
+            
             console.log('Parsed feed:', feed);
     
-            // Get the 3 most recent articles
+            
             const latestArticles = feed.items.slice(0, 3).map(article => {
                 return `**${article.title}**\n${article.link}`;
             });
     
-            // Send articles in response
+            
             await interaction.editReply({
                 content: latestArticles.join('\n\n'),
-                components: [], // Remove dropdown menu after selection
+                components: [], 
             });
         } catch (error) {
             console.error('Error fetching RSS feed:', error);
     
-            // Add more specific logging to diagnose
+            
             await interaction.editReply({
                 content: 'Could not fetch articles. Please try again later.',
                 components: [],
