@@ -11,12 +11,12 @@ module.exports = {
                 .setDescription('Search for specific news topics (e.g., technology, sports)')
                 .setRequired(false)),
     async execute(interaction) {
-        const query = interaction.options.getString('query') || 'world'; // Default topic: 'world'
+        const query = interaction.options.getString('query') || 'world'; 
         const apiKey = process.env.GUARDIAN_API_KEY;
         const url = `https://content.guardianapis.com/search?q=${encodeURIComponent(query)}&api-key=${apiKey}`;
 
         try {
-            await interaction.deferReply(); // Acknowledge the command while processing
+            await interaction.deferReply(); 
 
             const response = await axios.get(url);
             const articles = response.data.response.results;
@@ -25,7 +25,7 @@ module.exports = {
                 return interaction.editReply(`No news found for "${query}". Try another topic.`);
             }
 
-            // Format the top 5 articles
+            
             const newsList = articles.slice(0, 5).map(article => 
                 `**[${article.webTitle}](${article.webUrl})**`
             ).join('\n\n');
